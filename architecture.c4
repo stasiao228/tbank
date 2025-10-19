@@ -1,1 +1,53 @@
+model {
+    user = person "User"
 
+    tbank = group "TBank System" {
+        frontend = frontend "Frontend"
+        backend = service "Backend" {
+            auth = component "Authentication"
+            user_mgmt = component "User Management"
+            grades = component "Grade System"
+            subscriptions = component "Subscriptions"
+        }
+        database = database "SQLite DB"
+        dataset = service "Dataset Tools"
+    }
+
+    file_system = externalSystem "File System"
+    external_auth = externalSystem "External Auth"
+
+    user -> frontend
+    
+    frontend -> auth
+    frontend -> user_mgmt
+    frontend -> grades
+    frontend -> subscriptions
+
+    backend -> external_auth
+    backend -> file_system
+
+    auth -> database
+    user_mgmt -> database
+    grades -> database
+    subscriptions -> database
+
+    dataset -> user_mgmt
+    dataset -> database
+}
+
+views {
+    view system-context of tbank {
+        title "TBank - System Context"
+        include * -> *
+    }
+
+    view container of tbank {
+        title "TBank - Container"
+        include *
+    }
+
+    view components of tbank.backend {
+        title "TBank - Component"
+        include *
+    }
+}
